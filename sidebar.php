@@ -83,6 +83,13 @@
         </h1>
 
       </div>
+      <a href="user.php"><div
+        class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-gray-100 hover:text-black text-white"
+      >
+      <i class="bi bi-person"></i>
+      <span class="text-[15px] ml-4  font-bold">Users</span>
+      </div>
+      </a>
       <div
         class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-gray-100 hover:text-black text-white"
       >
