@@ -98,22 +98,16 @@ if ($result === false) {
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mt-2 ">
         <thead class="thead text-xs text-white uppercase text-center">
             <tr>
-            <th scope="col" class="px-6 py-3">
+            <th scope="col" class="px-10 py-3">
                     No
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    Supplier
+                <th scope="col" class="px-10 py-3">
+                    Name
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    Price
+                <th scope="col" class="px-10 py-3">
+                    Classification
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    UOM
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Stock
-                </th>
-                <th scope="col" class="px-6 py-3">
+                <th scope="col" class="px-10 py-3">
                     Action
                 </th>
             </tr>
@@ -127,16 +121,10 @@ if ($result === false) {
                 <?php echo $counter++; ?>
                 </th>
                 <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap ">
-                <?php echo htmlspecialchars($row['supplier_name']); ?>
+                <?php echo htmlspecialchars($row['name']); ?>
                 </th>
                 <td class="px-6 py-4">
-                ₱<?php echo htmlspecialchars($row['price']); ?>
-                </td>
-                <td class="px-6 py-4">
-                    Laptop
-                </td>
-                <td class="px-6 py-4">
-                    $2999
+                <?php echo htmlspecialchars($row['classification']); ?>
                 </td>
                 <td class="px-6 py-4">
                     <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
@@ -151,4 +139,26 @@ if ($result === false) {
 </div>
 </div>
 </body>
+<script>
+    /* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+  
+  document.getElementById("dropdownRadio").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+} 
+</script>
 </html>

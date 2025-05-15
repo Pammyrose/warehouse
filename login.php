@@ -18,7 +18,7 @@
 	  
          // session_register("myusername");
          $_SESSION['login_user'] = $myusername;
-         header("location: supplier.php");
+         header("location: dashboard.php");
       } else {
          $error = "Your Login Name or Password is invalid";
       }

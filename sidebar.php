@@ -75,9 +75,11 @@
         class="text-left text-sm mt-2 w-4/5 mx-auto text-gray-200 font-bold "
         id="submenu"
       >
+      <a href="product.php">
         <h1 class="cursor-pointer p-2  rounded-md mt-1 hover:bg-gray-100 hover:text-black">
          Products
         </h1>
+        </a>
         <h1 class="cursor-pointer p-2  rounded-md mt-1 hover:bg-gray-100 hover:text-black">
           Stock
         </h1>

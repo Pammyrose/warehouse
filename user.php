@@ -34,6 +34,8 @@ if ($result === false) {
   padding-right: 0.3em;
   text-align: right;
     }
+
+
 </style>
 <body>
 
@@ -126,7 +128,7 @@ if ($result === false) {
                 <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap ">
                 <?php echo htmlspecialchars($row['user']); ?>
                 </th>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 hidetext">
                 <?php echo htmlspecialchars($row['pass']); ?>
                 </td>
                 <td class="px-6 py-4">
