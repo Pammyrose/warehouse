@@ -126,8 +126,10 @@ if ($result === false) {
                 <td class="px-6 py-4">
                 <?php echo htmlspecialchars($row['classification']); ?>
                 </td>
-                <td class="px-6 py-4">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                <td class="px-6 py-4 ">
+                <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">View</a>
+                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-3">Edit</a>
+                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</a>
                 </td>
             </tr>
 
