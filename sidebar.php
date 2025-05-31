@@ -21,8 +21,25 @@
   background: #3498db;
 
 }
+
+@media screen and (max-width: 1024px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div.content {margin-left: 0;}
+}
+
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+}
   </style>
-  <body class=" content-wrapper">
+  <body class="flex-auto content-wrapper">
     <span
       class="absolute text-white text-4xl top-5 left-4 cursor-pointer"
       onclick="openSidebar()"
@@ -30,7 +47,7 @@
       <i class="bi bi-filter-left px-2 bg-gray-900 rounded-md"></i>
     </span>
     <div
-      class="color sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[300px] overflow-y-auto text-center bg-gray-900"
+      class="color sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[250px] overflow-y-auto text-center bg-gray-900"
     >
       <div class="text-gray-100 text-xl">
         <div class="p-2.5 mt-1 flex items-center">
