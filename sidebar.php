@@ -17,10 +17,7 @@
 }
 
 
-.color{
-  background: #3498db;
 
-}
 
 @media screen and (max-width: 1024px) {
   .sidebar {
@@ -47,7 +44,7 @@
       <i class="bi bi-filter-left px-2 bg-gray-900 rounded-md"></i>
     </span>
     <div
-      class="color sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[250px] overflow-y-auto text-center bg-gray-900"
+      class=" sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[250px] overflow-y-auto text-center bg-gray-900"
     >
       <div class="text-gray-100 text-xl">
         <div class="p-2.5 mt-1 flex items-center">
@@ -97,11 +94,23 @@
          Products
         </h1>
         </a>
+        <a href="stock_in.php">
         <h1 class="cursor-pointer p-2  rounded-md mt-1 hover:bg-gray-100 hover:text-black">
-          Stock
+          Stock In
+        </h1>
+        </a>
+        <h1 class="cursor-pointer p-2  rounded-md mt-1 hover:bg-gray-100 hover:text-black">
+          Stock Out
         </h1>
 
       </div>
+      <a href="reports.php"><div
+        class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-gray-100 hover:text-black text-white"
+      >
+      <i class="bi bi-bar-chart"></i>
+      <span class="text-[15px] ml-4  font-bold">Reports</span>
+      </div>
+      </a>
       <a href="user.php"><div
         class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-gray-100 hover:text-black text-white"
       >

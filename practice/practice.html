@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 id="greeting"></h1>
+    <p id="name-info"></p>
+    <p id="relationship-info"></p>
+    <button onclick="changeMessage()" class="h-20 w-20 py-10 px-10">Button</button>
+    <button onclick="resetMessage()"  class="h-20 w-20 py-10 px-10">Reset</button>
+</body>
+<script>
+    let myName = "Pamela";
+    let myBaby = "Russell"
+    let years = 2;
+
+
+    document.getElementById("greeting").textContent = "Hello my name is " + myName;
+    document.getElementById("name-info").textContent = "My baby's name is  " + myBaby;
+    document.getElementById("relationship-info").textContent = "We're already " + years + " years and counting :)";
+
+    function changeMessage(){
+    let myNickname = "Rose";
+    let myBaby = "James"
+    let years = 2;
+
+
+    document.getElementById("greeting").textContent = "Hello my name is " + myNickname;
+    document.getElementById("name-info").textContent = "My baby's name is  " + myBaby;
+    document.getElementById("relationship-info").textContent = "We're already " + years + " years and counting :)";
+    }
+
+    function resetMessage(){
+        document.getElementById("greeting").textContent = "Hello my name is ";
+            document.getElementById("name-info").textContent = "My baby's name is  ";
+    document.getElementById("relationship-info").textContent = "We're already ";
+    }
+</script>
+</html>

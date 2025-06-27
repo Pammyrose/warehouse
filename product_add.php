@@ -138,7 +138,7 @@ while ($row = $supplier_result->fetch_assoc()) {
       </div>
 
       <div class="flex justify-end space-x-3">
-        <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+        <button type="submit" class="bg-gray-900 text-white px-5 py-2 rounded hover:bg-gray-700 transition">
           <?php echo $product_id ? 'Update' : 'Save'; ?>
         </button>
         <button type="button" onclick="window.location.href='product.php'"

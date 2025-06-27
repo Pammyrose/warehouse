@@ -81,11 +81,6 @@ $db->close();
         });
     </script>
 </head>
-<style>
-    .thead {
-        background-color: #3498db;
-    }
-</style>
 <body>
 
 <?php include("sidebar.php"); ?>
@@ -126,7 +121,7 @@ $db->close();
             </div>
             <form method="GET" class="flex space-x-2 items-center">
                 <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" id="table-search" class="block p-2 ps-10 text-sm text-black border border-gray-300 rounded-lg w-80 focus:ring-blue-500 focus:border-blue-500" placeholder="Search..." />
-                <a href="user_add.php" class=" inline-flex bg-[#3498db] items-center text-white border border-gray-300 focus:outline-none hover:bg-blue-400 font-lg rounded-lg text-md px-3 py-1.5">+</a>
+                <a href="user_add.php" class=" inline-flex bg-gray-900 items-center text-white border border-gray-300 focus:outline-none hover:bg-gray-700 font-lg rounded-lg text-md px-3 py-1.5">+</a>
 
            
             </form>
@@ -134,7 +129,7 @@ $db->close();
 
         <div class="flex-auto w-full">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 mt-2">
-                <thead class="thead text-xs text-white uppercase text-center">
+                <thead class="bg-gray-900 text-xs text-white uppercase text-center">
                     <tr>
                         <th scope="col" class="px-7 py-2" style="width: 50px;">No</th>
                         <th scope="col" class="px-7 py-2" style="width: 200px;">Username</th>
@@ -154,7 +149,7 @@ $db->close();
                                 <td>********</td>
                                 <td><?php echo htmlspecialchars($row['name']); ?></td>
                                 <td>
-                                <a href="user_view.php?id=<?php echo $row['login_id']; ?>" class="font-medium text-yellow-500 hover:underline mr-3">View</a>
+                                <a href="user_view.php?id=<?php echo $row['login_id']; ?>" class="font-medium text-yellow-500 hover:underline mr-3">Edit</a>
                                        
                                         <a href="?delete_id=<?php echo $row['login_id']; ?>" class="font-medium text-red-600 hover:underline" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
                                     </td>

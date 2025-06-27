@@ -29,7 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
     }
 
-    header("Location: supplier_product.php"); // redirect to product listing page
+    header("Location: supplier_product.php?id=$supplier_id");
+
     exit();
 }
 
@@ -78,7 +79,7 @@ while ($row = $supplier_result->fetch_assoc()) {
 
   <div class="rounded-lg p-6 w-full max-w-md shadow-xl border bg-white relative">
 
-    <button id="closeModal" onclick="window.location.href='supplier_product.php'"
+    <button id="closeModal" onclick="window.location.href='supplier_product.php?id=<?= $supplier_id ?>'"
       class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl font-bold" aria-label="Close modal">&times;</button>
 
     <h2 id="modalTitle" class="text-xl font-semibold mb-6"><?php echo $product_id ? 'Update Product' : 'Add Product'; ?></h2>
@@ -142,12 +143,12 @@ while ($row = $supplier_result->fetch_assoc()) {
 
       <!-- Buttons -->
       <div class="flex justify-end space-x-3">
-        <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+        <button type="submit" class="bg-gray-900 text-white px-5 py-2 rounded hover:bg-gray-700 transition">
           <?php echo $product_id ? 'Update' : 'Save'; ?>
         </button>
-        <button type="button" onclick="window.location.href='supplier_product.php'" class="bg-gray-300 text-gray-800 px-5 py-2 rounded hover:bg-gray-400 transition">
-          Cancel
-        </button>
+        <button type="button" onclick="window.location.href='supplier_product.php?id=<?= $supplier_id ?>'" class="bg-gray-300 text-gray-800 px-5 py-2 rounded hover:bg-gray-400 transition">
+  Cancel
+</button>
       </div>
     </form>
   </div>

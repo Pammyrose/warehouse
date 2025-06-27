@@ -64,9 +64,9 @@ if (isset($_GET['id'])) {
     class="fixed inset-0 ml-70 flex justify-center items-center z-50">
 
     <!-- Modal content -->
-    <div class="rounded-lg p-6 w-full max-w-md shadow-xl border bg-white">
+    <div class="rounded-lg p-6 w-full max-w-md shadow-xl border bg-white relative">
 
-      <button id="closeModal" onclick="window.location.href='supplier_list.php'"
+      <button id="closeModal" onclick="window.location.href='supplier.php'"
         class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl font-bold" aria-label="Close modal">&times;</button>
 
       <h2 id="modalTitle" class="text-xl font-semibold mb-6"><?php echo $supplier_id ? 'Update Supplier' : 'Add Supplier'; ?></h2>
@@ -102,7 +102,7 @@ if (isset($_GET['id'])) {
 
         <!-- Submit and Cancel Buttons -->
         <div class="flex justify-end space-x-3">
-          <button type="submit" class="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition">
+          <button type="submit" class="bg-gray-900 text-white px-5 py-2 rounded hover:bg-gray-700 transition">
             <?php echo $supplier_id ? 'Update' : 'Save'; ?>
           </button>
           <button type="button" onclick="window.location.href='supplier.php'"

@@ -42,7 +42,7 @@ $searchEscaped = mysqli_real_escape_string($db, $search);
 // Build the query
 $sql = "SELECT * FROM product WHERE supplier_id = $supplier_id";
 if (!empty($search)) {
-    $sql .= " AND `desc` LIKE '%$searchEscaped%'";
+    $sql .= " AND `desc` LIKE '%$searchEscaped%' OR subclass LIKE '%$searchEscaped%' OR price LIKE '%$searchEscaped%' OR uom LIKE '%$searchEscaped%' OR stock LIKE '%$searchEscaped%'";
 }
 if ($sort === 'category') {
     $sql .= " ORDER BY subclass ASC";
@@ -80,9 +80,7 @@ $result = mysqli_query($db, $sql);
             });
         });
     </script>
-    <style>
-        .thead { background-color: #3498db; }
-    </style>
+
 </head>
 <body>
 
@@ -93,9 +91,16 @@ $result = mysqli_query($db, $sql);
         <h1 class="text-2xl font-bold mb-4">Products from <?php echo htmlspecialchars($supplier_name); ?></h1>
 
 
-        <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
+        <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
             <!-- Sort dropdown -->
             <div class="relative inline-block">
+            <a href="supplier.php" class="inline-flex bg-gray-900 items-center text-white border border-gray-300 focus:outline-none hover:bg-gray-700 font-lg rounded-lg text-md px-3 py-1.5">
+            <svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7"/>
+</svg>
+
+</a>
+           
                 <button id="dropdownToggle" class="inline-flex items-center text-black bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 font-medium rounded-lg text-sm px-3 py-1.5" type="button">
                     Sort By
                     <svg class="w-2.5 h-2.5 ms-2.5" fill="none" viewBox="0 0 10 6">
@@ -107,7 +112,7 @@ $result = mysqli_query($db, $sql);
                         <li>
                             <div class="flex items-center p-2 rounded-sm hover:bg-gray-100">
                                 <input id="sort-category" type="radio" value="category" name="sort-radio" <?php if ($sort === 'category') echo 'checked'; ?> onclick="updateSort('category')" class="w-4 h-4">
-                                <label for="sort-category" class="ms-2 text-sm font-medium">Category</label>
+                                <label for="sort-category" class="ms-2 text-sm font-medium">Subclass</label>
                             </div>
                         </li>
                         <li>
@@ -128,15 +133,16 @@ $result = mysqli_query($db, $sql);
                 </svg>
             </div>
             <form id="searchForm" method="GET" action="" class="flex space-x-2 items-center">
+            <input type="hidden" name="id" value="<?= $supplier_id ?>">
                 <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" id="table-search" class="block p-2 ps-10 text-sm text-black border border-gray-300 rounded-lg w-80 focus:ring-blue-500 focus:border-blue-500" placeholder="Search..." />
-                <a href="supplier_product_add.php?supplier_id=123" class="inline-flex bg-[#3498db] items-center text-white border border-gray-300 focus:outline-none hover:bg-blue-400 font-lg rounded-lg text-md px-3 py-1.5">+</a>
+                <a href="supplier_product_add.php?supplier_id=<?php echo $supplier_id; ?>" class="inline-flex bg-gray-900 items-center text-white border border-gray-300 focus:outline-none hover:bg-gray-700 font-lg rounded-lg text-md px-3 py-1.5">+</a>
             </form>
         </div>
         </div>
 
         <div class="w-full">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 mt-2">
-                <thead class="thead text-xs text-white uppercase text-center">
+                <thead class="bg-gray-900 text-xs text-white uppercase text-center">
                     <tr>
                         <th scope="col" class="px-7 py-2" style="width: 50px;">No</th>
                         <th scope="col" class="px-7 py-2" style="width: 300px;">Subclass</th>
@@ -160,7 +166,7 @@ $result = mysqli_query($db, $sql);
                                 <td><?php echo htmlspecialchars($row['uom']); ?></td>
                                 <td><?php echo htmlspecialchars($row['stock'], 2); ?></td>
                                 <td>
-                                    <a href="supplier_product_view.php?id=<?php echo $row['product_id']; ?>" class="font-medium text-yellow-500 hover:underline mr-3">View</a>
+                                    <a href="supplier_product_view.php?id=<?php echo $row['product_id']; ?>" class="font-medium text-yellow-500 hover:underline mr-3">Edit</a>
                                     <a href="?id=<?php echo $supplier_id; ?>&delete_id=<?php echo $row['product_id']; ?>" class="font-medium text-red-600 hover:underline" onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
                                 </td>
                             </tr>
@@ -175,6 +181,26 @@ $result = mysqli_query($db, $sql);
         </div>
     </div>
 </div>
+<script>
+function updateSort(value) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('sort', value);
 
+    // Ensure supplier id stays in the URL
+    if (!url.searchParams.get('id')) {
+        url.searchParams.set('id', <?= $supplier_id ?>);
+    }
+
+    // Preserve the search term if it exists
+    const searchInput = document.getElementById('table-search');
+    if (searchInput && searchInput.value) {
+        url.searchParams.set('search', searchInput.value);
+    }
+
+    window.location.href = url.toString();
+}
+
+
+</script>
 </body>
 </html>

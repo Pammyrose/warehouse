@@ -80,11 +80,7 @@ $db->close();
             });
         });
     </script>
-    <style>
-        .thead {
-            background-color: #3498db;
-        }
-    </style>
+
 </head>
 <body>
 
@@ -129,13 +125,13 @@ $db->close();
             </div>
             <form method="GET" class="flex space-x-2 items-center">
                 <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" id="table-search" class="block p-2 ps-10 text-sm text-black border border-gray-300 rounded-lg w-80 focus:ring-blue-500 focus:border-blue-500" placeholder="Search..." />
-                <a href="supplier_add.php" class="inline-flex bg-[#3498db] items-center text-white border border-gray-300 focus:outline-none hover:bg-blue-400 font-lg rounded-lg text-md px-3 py-1.5">+</a>
+                <a href="supplier_add.php" class="inline-flex bg-gray-900 items-center text-white border border-gray-300 focus:outline-none hover:bg-gray-700 font-lg rounded-lg text-md px-3 py-1.5">+</a>
             </form>
         </div>
 
         <div class="w-full">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 mt-2">
-                <thead class="thead text-xs text-white uppercase text-center">
+                <thead class="bg-gray-900 text-xs text-white uppercase text-center">
                     <tr>
                         <th scope="col" class="px-7 py-2" style="width: 50px;">No</th>
                         <th scope="col" class="px-7 py-2" style="width: 300px;">Name</th>
