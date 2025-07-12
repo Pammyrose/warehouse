@@ -19,6 +19,79 @@ $sql_products = "SELECT COUNT(*) as total_products FROM product";
 $result_products = $db->query($sql_products);
 $row_products = $result_products->fetch_assoc();
 $total_products = $row_products['total_products'];
+
+// Get total number of stock_start entries from the latest date
+$sql_stocks = "
+  SELECT SUM(stock_start) as total_stocks
+  FROM stock_log
+  WHERE DATE(date) = (
+    SELECT DATE(MAX(date)) FROM stock_log
+  )
+";
+$result_stocks = $db->query($sql_stocks);
+$row_stocks = $result_stocks->fetch_assoc();
+$total_stocks = $row_stocks['total_stocks'];
+
+
+// Get total number of stockin entries from the latest date
+$sql_stockin = "
+  SELECT SUM(total) as total_stockin
+  FROM stock_log
+  WHERE DATE(date) = (
+    SELECT DATE(MAX(date)) FROM stock_log
+  )
+";
+$result_stockin = $db->query($sql_stockin);
+$row_stockin = $result_stockin->fetch_assoc();
+$total_stockin = $row_stockin['total_stockin'];
+
+// Get total number of stockout entries from the latest date
+$sql_stockout = "
+  SELECT SUM(out_stock) as total_stockout
+  FROM stock_log
+  WHERE DATE(date) = (
+    SELECT DATE(MAX(date)) FROM stock_log
+  )
+";
+$result_stockout = $db->query($sql_stockout);
+$row_stockout = $result_stockout->fetch_assoc();
+$total_stockout = $row_stockout['total_stockout'];
+
+// Get total number of pyesta_outstock entries from the latest date
+$sql_pyesta_stockout = "
+  SELECT SUM(pyesta_outstock) as total_pyesta_stockout
+  FROM stock_log
+  WHERE DATE(date) = (
+    SELECT DATE(MAX(date)) FROM stock_log
+  )
+";
+$result_pyesta_stockout = $db->query($sql_pyesta_stockout);
+$row_pyesta_stockout = $result_pyesta_stockout->fetch_assoc();
+$total_pyesta_stockout = $row_pyesta_stockout['total_pyesta_stockout'];
+
+// Get total number of save5_outstock entries from the latest date
+$sql_save5_stockout = "
+  SELECT SUM(save5_outstock) as total_save5_stockout
+  FROM stock_log
+  WHERE DATE(date) = (
+    SELECT DATE(MAX(date)) FROM stock_log
+  )
+";
+$result_save5_stockout = $db->query($sql_save5_stockout);
+$row_save5_stockout = $result_save5_stockout->fetch_assoc();
+$total_save5_stockout = $row_save5_stockout['total_save5_stockout'];
+
+// Get total number of stockout entries (out_stock + pyesta_outstock + save5_outstock) from the latest date
+$sql_total_stockout = "
+  SELECT SUM(COALESCE(out_stock, 0) + COALESCE(pyesta_outstock, 0) + COALESCE(save5_outstock, 0)) as total_stockout
+  FROM stock_log
+  WHERE DATE(date) = (
+    SELECT DATE(MAX(date)) FROM stock_log
+  )
+";
+$result_stockout = $db->query($sql_total_stockout);
+$row_stockout = $result_stockout->fetch_assoc();
+$total_total_stockout = $row_stockout['total_stockout'] ?: 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +103,12 @@ $total_products = $row_products['total_products'];
 <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2" defer></script>
+
+
 <style>
+
+  
 @media screen and (max-width: 700px) {
   .box {
     display: flex;
@@ -51,71 +129,249 @@ $total_products = $row_products['total_products'];
 
 <?php include("sidebar.php"); ?>
 
-<div class="bg-white content-wrapper flex items-start justify-center min-h-screen p-2 md:lg:ml-[300px] lg:ml-[250px]">
-  <div class="box px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
-    <div class="grid gap-8 row-gap-5 md:grid-cols-2">
+<div class="bg-white content-wrapper flex flex-col items-center justify-start min-h-screen p-2 md:lg:ml-[300px] lg:ml-[250px]">
 
-      <!-- Total Suppliers Box -->
-      <div class="p-6 bg-gray-100 rounded-lg shadow-md flex items-center justify-center w-80 h-60">
-        <div class="flex flex-col items-center">
-          <h2 class="text-gray-600 font-semibold mb-6 self-start">Total of Suppliers</h2>
-          <p class="text-8xl font-bold text-gray-800 text-center"><?php echo $total_suppliers; ?></p>
-        </div>
+    <h1 class="text-3xl font-bold text-left underline shadow-lg ">Dashboard</h1>
+
+<div class="w-full max-w-screen-xl px-4 py-8">
+
+    <!-- Grid for 6 Total Boxes -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 mb-10">
+
+          <!-- Total Users -->
+          <div class="bg-gray-100 rounded-lg shadow-md p-6 text-center">
+        <h2 class="text-gray-600 font-semibold mb-2">Users</h2>
+        <p class="text-5xl font-bold text-gray-800"><?php echo $total_users; ?></p>
       </div>
 
-      <!-- Pie Chart Card -->
-      <div class="max-w-sm w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
-        <div class="flex justify-between items-start w-full">
-          <div class="flex-col items-center">
-            <div class="flex items-center mb-1">
-              <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white me-1">Pie Chart</h5>
-              <svg data-popover-target="chart-info" data-popover-placement="bottom" class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm0 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm1-5.034V12a1 1 0 0 1-2 0v-1.418a1 1 0 0 1 1.038-.999 1.436 1.436 0 0 0 1.488-1.441 1.501 1.501 0 1 0-3-.116.986.986 0 0 1-1.037.961 1 1 0 0 1-.96-1.037A3.5 3.5 0 1 1 11 11.466Z"/>
-              </svg>
-              <div data-popover id="chart-info" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-xs opacity-0 w-72 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
-                <div class="p-3 space-y-2">
-                 <h3 class="font-semibold text-gray-900 dark:text-white">Calculation</h3>
-                 <p>Each data point in the inventory report reflects a cumulative total, meaning it includes all previous quantities along with any new additions for that period. This running total approach offers a comprehensive view of inventory growth and movement over time. It enables clear tracking of stock accumulation, helps identify trends such as overstocking or depletion, and supports better forecasting and supply planning. By continuously summing data, it ensures that decision-makers can assess the overall performance and health of inventory with each passing period.</p> </div>
-                <div data-popper-arrow></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pie Chart Canvas -->
-        <canvas id="myPieChart" width="400" height="400"></canvas>
+            <!-- Total Products -->
+            <div class="bg-gray-100 rounded-lg shadow-md p-6 text-center">
+        <h2 class="text-gray-600 font-semibold mb-2">Products</h2>
+        <p class="text-5xl font-bold text-gray-800"><?php echo $total_products; ?></p>
       </div>
+      
+      <!-- Total Suppliers -->
+      <div class="bg-gray-100 rounded-lg shadow-md p-6 text-center">
+        <h2 class="text-gray-600 font-semibold mb-2">Suppliers</h2>
+        <p class="text-5xl font-bold text-gray-800"><?php echo $total_suppliers; ?></p>
+      </div>
+
+      <!-- Placeholder Box 4 -->
+      <div class="bg-gray-100 rounded-lg shadow-md p-6 text-center">
+        <h2 class="text-gray-600 font-semibold mb-2">Stocks</h2>
+        <p class="text-5xl font-bold text-gray-800"><?php echo $total_stocks; ?></p>
+      </div>
+
+      <!-- Placeholder Box 5 -->
+      <div class="bg-gray-100 rounded-lg shadow-md p-6 text-center">
+        <h2 class="text-gray-600 font-semibold mb-2">Stock In</h2>
+        <p class="text-5xl font-bold text-gray-800"><?php echo $total_stockin; ?></p>
+      </div>
+
+      <!-- Placeholder Box 6 -->
+      <div class="bg-gray-100 rounded-lg shadow-md p-6 text-center">
+        <h2 class="text-gray-600 font-semibold mb-2">Stock Out</h2>
+        <p class="text-5xl font-bold text-gray-800"><?php echo $total_total_stockout; ?></p>
+      </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-6 px-4 py-6">
+  <!-- Pie Chart Card (1/3 width on large screens) -->
+  <div class="bg-gray-800 rounded-lg shadow-md p-6 w-full lg:w-1/3">
+    <h5 class="text-xl font-bold text-white mb-13">Pie Chart</h5>
+    <canvas id="myPieChart" class="w-full max-w-md mx-auto"></canvas>
+  </div>
+
+  <div class="bg-gray-800 text-white rounded-lg shadow-md p-6 w-full lg:w-2/3" 
+     x-data="chartData()" x-init="init()">
+  <h3 class="text-white text-xl mb-4">Stock In / Stock Out Chart (Live)</h3>
+
+  <div class="mb-4">
+    <label for="startDate" class="mr-2">Start:</label>
+    <input type="datetime-local" id="startDate" x-model="startDate" @change="onDateChange"
+           class="bg-gray-700 text-white p-1 rounded" />
+
+    <label for="endDate" class="ml-4 mr-2">End:</label>
+    <input type="datetime-local" id="endDate" x-model="endDate" @change="onDateChange"
+           class="bg-gray-700 text-white p-1 rounded" />
+  </div>
+
+  <canvas id="chart" width="600" height="300" class="w-full"></canvas>
+</div>
+
+</div>
+
+
 
     </div>
   </div>
 </div>
 
 <script>
-  const ctx = document.getElementById('myPieChart').getContext('2d');
-  const myPieChart = new Chart(ctx, {
+const ctx = document.getElementById('myPieChart').getContext('2d');
+const myPieChart = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: ['Users', 'Products'],
-      datasets: [{
-        label: 'Totals',
-        data: [<?php echo $total_users; ?>, <?php echo $total_products; ?>],
-        backgroundColor: ['#FF6384','#36A2EB'],
-        borderColor: ['#E03A50','#2A7AE2'],
-        borderWidth: 1
-      }]
+        labels: ['Stock In','GTR Outstock', 'Pyesta Outstock', 'Save5 Outstock'],
+        datasets: [{
+            label: 'Totals',
+            data: [
+              <?php echo $total_stockin; ?>,
+                <?php echo $total_stockout; ?>,
+                <?php echo $total_pyesta_stockout; ?>,
+                <?php echo $total_save5_stockout; ?>,
+
+            
+            ],
+            backgroundColor: [
+
+                '#ED64A6', // Stock in
+                ' #BDC3C7 ', //GTR
+                '#36A2EB', // Pyesta
+                '#9966FF', // Stock In
+            
+            ],
+            borderColor: [
+
+                '#ED64A6', // Stock in
+                ' #BDC3C7 ', //GTR
+                '#2A7AE2', // Pyesta
+                '#7A4FCC', // Stock In
+        
+            ],
+            borderWidth: 1
+        }]
     },
     options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'bottom',
-        },
-        tooltip: {
-          enabled: true,
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+            },
+            tooltip: {
+                enabled: true,
+            }
         }
-      }
     }
-  });
+});
+
+  function chartData() {
+  return {
+    data: null,
+    chartInstance: null,
+    startDate: '',
+    endDate: '',
+    intervalId: null,
+
+    fetchData(startDate, endDate) {
+      const url = `chart_data.php?start=${encodeURIComponent(startDate)}&end=${encodeURIComponent(endDate)}`;
+      return fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          return {
+            stock_in: data.labels.map((date, i) => ({
+              date: date,
+              qty: data.stock_in[i],
+            })),
+            stock_out: data.labels.map((date, i) => ({
+              date: date,
+              qty: data.stock_out[i],
+            })),
+          };
+        });
+    },
+
+    prepareChartData(rawData) {
+      let allDatesSet = new Set();
+      rawData.stock_in.forEach(i => allDatesSet.add(i.date));
+      rawData.stock_out.forEach(i => allDatesSet.add(i.date));
+      let allDates = Array.from(allDatesSet).sort();
+
+      let stockInData = allDates.map(date => {
+        let found = rawData.stock_in.find(i => i.date === date);
+        return found ? found.qty : 0;
+      });
+
+      let stockOutData = allDates.map(date => {
+        let found = rawData.stock_out.find(i => i.date === date);
+        return found ? found.qty : 0;
+      });
+
+      return { labels: allDates, stock_in: stockInData, stock_out: stockOutData };
+    },
+
+    init() {
+      const now = new Date();
+      const earlier = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000)); // 7 days ago
+      this.startDate = earlier.toISOString().slice(0, 16);
+      this.endDate = now.toISOString().slice(0, 16);
+
+      this.loadChart(this.startDate, this.endDate);
+      this.intervalId = setInterval(() => {
+        this.loadChart(this.startDate, this.endDate);
+      }, 60000);
+    },
+
+    onDateChange() {
+      if (this.startDate && this.endDate) {
+        this.loadChart(this.startDate, this.endDate);
+      }
+    },
+
+    loadChart(startDate, endDate) {
+      this.fetchData(startDate, endDate)
+        .then(rawData => {
+          this.data = this.prepareChartData(rawData);
+          this.renderChart();
+        })
+        .catch(err => {
+          console.error('Error fetching data:', err);
+        });
+    },
+
+    renderChart() {
+      if (this.chartInstance) {
+        this.chartInstance.destroy();
+      }
+
+      const ctx = document.getElementById('chart').getContext('2d');
+      this.chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: this.data.labels,
+          datasets: [
+            {
+              label: 'Stock In',
+              backgroundColor: 'rgba(102, 126, 234, 0.25)',
+              borderColor: 'rgba(102, 126, 234, 1)',
+              pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+              data: this.data.stock_in,
+              fill: true,
+            },
+            {
+              label: 'Stock Out',
+              backgroundColor: 'rgba(237, 100, 166, 0.25)',
+              borderColor: 'rgba(237, 100, 166, 1)',
+              pointBackgroundColor: 'rgba(237, 100, 166, 1)',
+              data: this.data.stock_out,
+              fill: true,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    }
+  }
+}
 </script>
 
 </body>

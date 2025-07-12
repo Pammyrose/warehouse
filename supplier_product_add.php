@@ -145,10 +145,23 @@ if ($supplier_id) {
       <div class="mb-4">
         <select name="uom" class="w-full border p-2 rounded" required>
           <option value="" disabled <?php echo ($uom == '') ? 'selected' : ''; ?>>Select Unit of Measure</option>
-          <option value="svg" <?php echo ($uom == 'svg') ? 'selected' : ''; ?>>svg</option>
-          <option value="g" <?php echo ($uom == 'g') ? 'selected' : ''; ?>>g</option>
-          <option value="ml" <?php echo ($uom == 'ml') ? 'selected' : ''; ?>>ml</option>
-          <option value="pcs" <?php echo ($uom == 'pcs') ? 'selected' : ''; ?>>pcs</option>
+          <option value="Box" <?php echo ($uom == 'Box') ? 'selected' : ''; ?>>Box</option>
+<option value="Roll" <?php echo ($uom == 'Roll') ? 'selected' : ''; ?>>Roll</option>
+<option value="Bale" <?php echo ($uom == 'Bale') ? 'selected' : ''; ?>>Bale</option>
+<option value="Tub" <?php echo ($uom == 'Tub') ? 'selected' : ''; ?>>Tub</option>
+<option value="PK" <?php echo ($uom == 'PK') ? 'selected' : ''; ?>>PK</option>
+<option value="Sack" <?php echo ($uom == 'Sack') ? 'selected' : ''; ?>>Sack</option>
+<option value="Gal" <?php echo ($uom == 'Gal') ? 'selected' : ''; ?>>Gal</option>
+<option value="Pail" <?php echo ($uom == 'Pail') ? 'selected' : ''; ?>>Pail</option>
+<option value="Drum" <?php echo ($uom == 'Drum') ? 'selected' : ''; ?>>Drum</option>
+<option value="Can" <?php echo ($uom == 'Can') ? 'selected' : ''; ?>>Can</option>
+<option value="Bot" <?php echo ($uom == 'Bot') ? 'selected' : ''; ?>>Bot</option>
+<option value="Jar" <?php echo ($uom == 'Jar') ? 'selected' : ''; ?>>Jar</option>
+<option value="KG" <?php echo ($uom == 'KG') ? 'selected' : ''; ?>>KG</option>
+<option value="Pcs" <?php echo ($uom == 'Pcs') ? 'selected' : ''; ?>>Pcs</option>
+<option value="Case" <?php echo ($uom == 'Case') ? 'selected' : ''; ?>>Case</option>
+<option value="Ream" <?php echo ($uom == 'Ream') ? 'selected' : ''; ?>>Ream</option>
+<option value="Sachet" <?php echo ($uom == 'Sachet') ? 'selected' : ''; ?>>Sachet</option>
         </select>
       </div>
 

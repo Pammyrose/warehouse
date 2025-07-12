@@ -1,129 +1,86 @@
-<?php
-// Backend part: Prepare data as JSON inside the same PHP file
-
-// DB connection (adjust credentials)
-$db = new mysqli('localhost', 'root', '', 'warehouse');
-
-if ($db->connect_error) {
-    $json_data = json_encode(['error' => 'DB connection failed']);
-} else {
-    function getSumQty($db, $table, $start_date, $end_date) {
-        $stmt = $db->prepare("SELECT DATE(date) as day, SUM(qty) as qty FROM $table WHERE DATE(date) BETWEEN ? AND ? GROUP BY DATE(date)");
-        $stmt->bind_param('ss', $start_date, $end_date);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $data = [];
-        while ($row = $result->fetch_assoc()) {
-            $data[$row['day']] = (int)$row['qty'];
-        }
-        return $data;
-    }
-
-    // Declare fillZeroData once here
-    function fillZeroData($period, $data) {
-        $filled = [];
-        foreach ($period as $day) {
-            $filled[] = $data[$day] ?? 0;
-        }
-        return $filled;
-    }
-
-    $today = date('Y-m-d');
-    $periods = [7, 30, 90];
-    $dataForPeriods = [];
-
-    foreach ($periods as $days) {
-        $start = date('Y-m-d', strtotime("-" . ($days - 1) . " days"));
-        $end = $today;
-
-        $stockIn = getSumQty($db, 'stock_in', $start, $end);
-        $stockOut = getSumQty($db, 'stock_out', $start, $end);
-
-        $periodDates = [];
-        for ($i = 0; $i < $days; $i++) {
-            $periodDates[] = date('Y-m-d', strtotime("-$i days"));
-        }
-        $periodDates = array_reverse($periodDates);
-
-        // Use the single declared function here
-        $dataForPeriods[$days] = [
-            'labels' => $periodDates,
-            'stock_in' => fillZeroData($periodDates, $stockIn),
-            'stock_out' => fillZeroData($periodDates, $stockOut),
-        ];
-    }
-
-    $json_data = json_encode([
-        'dates' => $dataForPeriods,
-    ]);
-}
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Stock In/Out Chart</title>
-<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-<style>
-  body { background: white; color: #a0aec0; font-family: sans-serif; }
-  .container {
-  max-width: 1000px;
-  margin: 70px 350px;
-  background: #2d3748;
-  padding: 20px;
-  border-radius: 8px;
-}
-
-  h3 { color: white; margin-bottom: 10px; }
-  label, select { font-size: 1rem; }
-  select { background: #4a5568; color: #a0aec0; border: none; padding: 5px 10px; border-radius: 4px; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stock In/Out Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+  <style>
+    body {
+      background: white;
+      color: #a0aec0;
+      font-family: sans-serif;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 70px auto;
+      background: #2d3748;
+      padding: 20px;
+      border-radius: 8px;
+      margin-right:75px;
+    }
+    h3 {
+      color: white;
+      margin-bottom: 10px;
+    }
+    label, select {
+      font-size: 1rem;
+      color: white;
+    }
+    select {
+      background: #4a5568;
+      color: #a0aec0;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-white text-gray-300 flex items-center justify-center">
-
+<body>
 <?php include("sidebar.php"); ?>
-<div class="container bg-white" x-data="chartData()" x-init="init()">
-  <h3>Stock In / Stock Out Chart</h3>
+<div class="container" x-data="chartData()" x-init="init()">
+  <h3>Stock In / Stock Out Chart (Live)</h3>
+
+  <div style="margin-bottom: 10px;">
+  <label for="startDate" style="margin-right: 10px;">Start:</label>
+  <input type="datetime-local" id="startDate" x-model="startDate" @change="onDateChange" />
+
+  <label for="endDate" style="margin-left: 20px; margin-right: 10px;">End:</label>
+  <input type="datetime-local" id="endDate" x-model="endDate" @change="onDateChange" />
+</div>
+
+
   
-  <label for="dateRange" style="color: white; margin-right: 10px;">Select Period:</label>
-  <select id="dateRange" x-on:change="onPeriodChange($event.target.value)">
-    <option value="7" selected>Last 7 Days</option>
-    <option value="30">Last 30 Days</option>
-    <option value="90">Last 90 Days</option>
-  </select>
-  
-  <canvas id="chart" width="600" height="300" style="margin-top: 20px;"></canvas>
+
+  <canvas id="chart" width="800" height="400" style="margin-top: 20px;"></canvas>
 </div>
 
 <script>
-// Inject PHP JSON data into JS variable
-const backendData = <?php echo $json_data; ?>;
-
 function chartData() {
   return {
     data: null,
     chartInstance: null,
-    currentPeriod: '7',
+    startDate: '',
+    endDate: '',
+    intervalId: null,
 
-    fetchData(period = '7') {
-      const periodData = backendData.dates[period];
-      if (!periodData) {
-        return Promise.reject('No data for period ' + period);
-      }
-      return Promise.resolve({
-        stock_in: periodData.labels.map((date, i) => ({
-          date: date,
-          qty: periodData.stock_in[i],
-        })),
-        stock_out: periodData.labels.map((date, i) => ({
-          date: date,
-          qty: periodData.stock_out[i],
-        })),
-      });
+    fetchData(startDate, endDate) {
+      const url = `chart_data.php?start=${encodeURIComponent(startDate)}&end=${encodeURIComponent(endDate)}`;
+      return fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          return {
+            stock_in: data.labels.map((date, i) => ({
+              date: date,
+              qty: data.stock_in[i],
+            })),
+            stock_out: data.labels.map((date, i) => ({
+              date: date,
+              qty: data.stock_out[i],
+            })),
+          };
+        });
     },
 
     prepareChartData(rawData) {
@@ -146,11 +103,25 @@ function chartData() {
     },
 
     init() {
-      this.loadChart(this.currentPeriod);
+      const now = new Date();
+      const earlier = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000)); // 7 days ago
+      this.startDate = earlier.toISOString().slice(0, 16);
+      this.endDate = now.toISOString().slice(0, 16);
+
+      this.loadChart(this.startDate, this.endDate);
+      this.intervalId = setInterval(() => {
+        this.loadChart(this.startDate, this.endDate);
+      }, 60000);
     },
 
-    loadChart(period) {
-      this.fetchData(period)
+    onDateChange() {
+      if (this.startDate && this.endDate) {
+        this.loadChart(this.startDate, this.endDate);
+      }
+    },
+
+    loadChart(startDate, endDate) {
+      this.fetchData(startDate, endDate)
         .then(rawData => {
           this.data = this.prepareChartData(rawData);
           this.renderChart();
@@ -160,15 +131,11 @@ function chartData() {
         });
     },
 
-    onPeriodChange(period) {
-      this.currentPeriod = period;
-      this.loadChart(period);
-    },
-
     renderChart() {
       if (this.chartInstance) {
         this.chartInstance.destroy();
       }
+
       const ctx = document.getElementById('chart').getContext('2d');
       this.chartInstance = new Chart(ctx, {
         type: 'line',
@@ -194,16 +161,11 @@ function chartData() {
           ]
         },
         options: {
+          responsive: true,
           scales: {
             yAxes: [{
               ticks: {
-                beginAtZero: true,
-                min: 0,
-                max: 200,
-                stepSize: 10,
-                callback: function(value) {
-                  return value;
-                }
+                beginAtZero: true
               }
             }]
           }
@@ -212,6 +174,7 @@ function chartData() {
     }
   }
 }
+
 </script>
 
 </body>
